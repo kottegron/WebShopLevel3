@@ -1,7 +1,9 @@
 package Fasade;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import BO.*;
+import DB.NoSuchSQLLine;
 public class Fasad {
 	private UserObject userObject;
 	
@@ -39,10 +41,13 @@ public class Fasad {
 	//is login correct???
 	public boolean Login(String email, String pass)
 	{
-		if(userObject.Login(email, pass))	
-			return true;
-		else
-			return false;
+		
+			if(userObject.Login(email, pass))	
+				return true;
+			
+				
+			else
+				return false;
 	}
 	
 	
@@ -51,9 +56,17 @@ public class Fasad {
 	    return true;	
 	}
 	
-	public boolean addDrugs(ArrayList<Integer> list)
+	public boolean addDrugs(ArrayList<Integer> list) 
 	{
-		userObject.addDrugs(list);
+		try {
+			userObject.addDrugs(list);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("wrongs SQL");
+			
+		}
 		return true;
 		
 	}

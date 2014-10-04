@@ -25,13 +25,88 @@ public class SQLUser {
 		conn = connect("127.0.0.1", "mydb", "root", "root");
 	}
 	
-	public boolean addToCart(String email,int E,int C,int P)
+	public ArrayList<Integer> getCartWithEmail(String mail) 
 	{
+		    int E = 0;
+			int C = 0;
+			int P = 0;
+			ArrayList<Integer> cart = new ArrayList<Integer>();
+			
+				
+			try{
+			Statement myStmt = conn.createStatement();
+			
+			
+			ResultSet rs = myStmt
+					.executeQuery("select * from drugs where mail = '" + mail
+							+ "'");
+							
+			while (rs.next()) {
+				System.out.println(rs.getString("mail") + " " + rs.getInt("E") + " " + rs.getInt("C") + " " + rs.getInt("P"));
+				 E = rs.getInt("E");
+				 C = rs.getInt("C");
+				 P = rs.getInt("P");
+			}
+			
+			
+		}
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+			cart.add(E);
+			cart.add(C);
+			cart.add(P);
+		
+		
+		return cart;
+		
+	}
+	 
+	public boolean addToCart(String email,int E,int C,int P) throws SQLException
+	{
+		    //if there already exists items we must add them here
+			ArrayList<Integer> cart = new ArrayList<Integer>();
+		    cart = getCartWithEmail(email);
+		    
+		
+			E = E + cart.get(0);
+		    C = C + cart.get(1);
+		    P = P + cart.get(2);
+	
+	  //no cart found for user
+      if(cart.get(0)==0 && cart.get(1)==0 && cart.get(2)==0)
+		{
+		    
+		//if user doesn't have any items  
 		//perform SQL query
-		//Statement stm = conn.createStatement();
-		//stm.executeUpdate("INSERT INTO `mydb`.`drugs` ( `mail`, `E`) VALUES ('"+email+"','" +E+"','"+C+"','"+P+"')");	
+		Statement stm = conn.createStatement();
+		stm.executeUpdate("INSERT INTO `mydb`.`drugs` ( `mail`, `E`,`C`,`P`) VALUES ('"+email+"','" +E+"','"+C+"','"+P+"')");	
+		
+		}
+      
+      else
+      {
+    	  System.out.println("update");
+    	  //updateTable(email,E,C,P);
+    	    
+      }
 		return true;
 	}
+	
+//	public void updateTable(String email,int E,int C,int P)
+//	{
+//		UPDATE table_name
+//		SET column1=value1,column2=value2,...
+//		WHERE some_column=some_value;
+//		
+//		int rows = stmt.executeUpdate( "UPDATE Cust SET CUST_NO = 9842 WHERE CUST_NO = 9841" ) ;
+//		Statement stm = conn.createStatement();
+//		stmt.executeUpdate( "UPDATE drugs SET E =" + E CUST_NO = 9841" ) ;
+//		
+//		
+//  }
 
 	public String checkUser(String email,String password)
 	{

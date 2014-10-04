@@ -1,6 +1,8 @@
 package BO;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import DB.NoSuchSQLLine;
 import DB.SQLUser;
 
 public class UserObject {
@@ -29,6 +31,25 @@ public class UserObject {
 			user.setPassword(password);
 			user.setEmail(email);
 			
+			//init users cart etc
+			ArrayList<Integer> cart = new ArrayList<Integer>(); 
+			try {
+				cart = SQLU.getCartWithEmail(user.getEmail());
+				if(cart!=null)
+				{
+					user.addDrugs(cart);
+				}
+				else
+				{
+					System.out.println("empty cart UO class");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//user.initCart();
+			
 			return true;
 		}
 	}
@@ -44,7 +65,7 @@ public class UserObject {
 		return user.getCart();
 	}
 	
-	public boolean addDrugs(ArrayList<Integer> list)
+	public boolean addDrugs(ArrayList<Integer> list) throws SQLException
 	{
 		user.addDrugs(list);
 		String email = user.getEmail();
@@ -62,11 +83,6 @@ public class UserObject {
 	}
 	
 	
-	
-	
-	
-	
-
 	
 
 
